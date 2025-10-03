@@ -4,8 +4,8 @@ A comprehensive full-stack web application for managing pet nutrition with custo
 
 ## 👥 Team Members
 
-- **Ayyada K** - Full Stack Developer & Database Designer
-- **[Team Member 2]** - [Role]
+- **Ayyada K** -
+- **Thapana Dermbangchon** - [Role]
 - **[Team Member 3]** - [Role]
 
 ## 📋 Project Description
