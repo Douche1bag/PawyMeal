@@ -1,0 +1,12 @@
+{
+  "foodAllergies": [
+    { "name": "Chicken", "icon": "🐔", "selected": false },
+    { "name": "Salmon", "icon": "🐟", "selected": false },
+    { "name": "Beef", "icon": "🥩", "selected": false },
+    { "name": "Lamb", "icon": "🐑", "selected": false },
+    { "name": "Beans", "icon": "☕", "selected": false },
+    { "name": "Corn", "icon": "🌽", "selected": false },
+    { "name": "Gluten", "icon": "🌾", "selected": false },
+    { "name": "Dairy", "icon": "🐄", "selected": true }
+  ]
+}

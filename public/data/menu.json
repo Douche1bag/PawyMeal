@@ -1,0 +1,187 @@
+[
+  {
+    "id": 1,
+    "title": "Grilled Chicken Salad",
+    "description": "A healthy mix of grilled chicken, fresh vegetables, and a light vinaigrette dressing.",
+    "ingredients": [
+      {
+        "name": "Grilled Chicken",
+        "advantage": "High in protein and supports muscle growth."
+      },
+      {
+        "name": "Lettuce",
+        "advantage": "Low in calories and high in fiber, good for digestion."
+      },
+      {
+        "name": "Tomatoes",
+        "advantage": "Rich in antioxidants and supports heart health."
+      },
+      {
+        "name": "Cucumbers",
+        "advantage": "Hydrating and helps with skin health."
+      },
+      {
+        "name": "Olive Oil",
+        "advantage": "Contains healthy fats that support brain function."
+      },
+      {
+        "name": "Lemon Juice",
+        "advantage": "Boosts immunity and aids digestion."
+      }
+    ],
+    "image": "https://www.dinneratthezoo.com/wp-content/uploads/2020/12/grilled-chicken-salad-4.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Spaghetti Carbonara",
+    "description": "Classic Italian pasta with eggs, cheese, pancetta, and black pepper.",
+    "ingredients": [
+      {
+        "name": "Spaghetti",
+        "advantage": "Provides carbohydrates for energy."
+      },
+      {
+        "name": "Eggs",
+        "advantage": "High in protein and essential vitamins."
+      },
+      {
+        "name": "Parmesan Cheese",
+        "advantage": "Good source of calcium for bone health."
+      },
+      {
+        "name": "Pancetta",
+        "advantage": "Adds flavor and provides healthy fats."
+      },
+      {
+        "name": "Black Pepper",
+        "advantage": "Aids digestion and has anti-inflammatory properties."
+      }
+    ],
+    "image": "https://oldcutkitchen.com/wp-content/uploads/2020/04/IMG_4807.jpg"
+  },
+  {
+    "id": 3,
+    "title": "Vegetable Stir Fry",
+    "description": "A delicious stir-fry with mixed vegetables, tofu, and soy sauce.",
+    "ingredients": [
+      {
+        "name": "Broccoli",
+        "advantage": "High in fiber and supports immune function."
+      },
+      {
+        "name": "Carrots",
+        "advantage": "Rich in vitamin A and good for eye health."
+      },
+      {
+        "name": "Bell Peppers",
+        "advantage": "Loaded with vitamin C and boosts immunity."
+      },
+      { "name": "Tofu", "advantage": "Excellent plant-based protein source." },
+      {
+        "name": "Soy Sauce",
+        "advantage": "Adds umami flavor and contains essential amino acids."
+      },
+      {
+        "name": "Ginger",
+        "advantage": "Reduces inflammation and aids digestion."
+      }
+    ],
+    "image": "https://kristineskitchenblog.com/wp-content/uploads/2024/01/vegetable-stir-fry-22-3.jpg"
+  },
+  {
+    "id": 4,
+    "title": "Quinoa Avocado Bowl",
+    "description": "A nutrient-packed bowl with quinoa, avocado, chickpeas, and fresh greens.",
+    "ingredients": [
+      {
+        "name": "Quinoa",
+        "advantage": "Rich in protein and contains all essential amino acids."
+      },
+      {
+        "name": "Avocado",
+        "advantage": "Provides healthy fats and supports heart health."
+      },
+      {
+        "name": "Chickpeas",
+        "advantage": "Great plant-based protein and high in fiber."
+      },
+      {
+        "name": "Spinach",
+        "advantage": "Loaded with iron and boosts energy levels."
+      },
+      {
+        "name": "Lemon Dressing",
+        "advantage": "Adds flavor while aiding digestion and vitamin C intake."
+      }
+    ],
+    "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/california-quinoa-avocado-salad-820b6ba.jpg"
+  },
+  {
+    "id": 5,
+    "title": "Honey Garlic Salmon with Asparagus",
+    "description": "A flavorful salmon dish glazed with honey garlic sauce, served with fresh asparagus.",
+    "ingredients": [
+      {
+        "name": "Salmon",
+        "advantage": "Rich in Omega-3 fatty acids, supports brain and heart health."
+      },
+      {
+        "name": "Garlic",
+        "advantage": "Boosts immune system and has anti-inflammatory properties."
+      },
+      {
+        "name": "Honey",
+        "advantage": "A natural sweetener with antioxidants and antibacterial properties."
+      },
+      {
+        "name": "Soy Sauce",
+        "advantage": "Enhances umami flavor and provides essential amino acids."
+      },
+      {
+        "name": "Asparagus",
+        "advantage": "High in fiber and supports digestive health."
+      },
+      {
+        "name": "Olive Oil",
+        "advantage": "Contains healthy fats that support heart function."
+      }
+    ],
+    "image": "https://www.thecookierookie.com/wp-content/uploads/2020/08/honey-garlic-salmon-asparagus-7-of-12.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Mediterranean Chickpea Salad",
+    "description": "A refreshing salad with chickpeas, cucumbers, tomatoes, and feta cheese, dressed in olive oil and lemon.",
+    "ingredients": [
+      {
+        "name": "Chickpeas",
+        "advantage": "Excellent source of plant-based protein and fiber."
+      },
+      {
+        "name": "Cucumbers",
+        "advantage": "Hydrating and supports skin health."
+      },
+      {
+        "name": "Tomatoes",
+        "advantage": "Rich in antioxidants and supports heart health."
+      },
+      {
+        "name": "Feta Cheese",
+        "advantage": "Provides calcium for strong bones."
+      },
+      {
+        "name": "Olive Oil",
+        "advantage": "Contains heart-healthy fats and reduces inflammation."
+      },
+      {
+        "name": "Lemon Juice",
+        "advantage": "Enhances flavor while supporting digestion and immunity."
+      },
+      {
+        "name": "Parsley",
+        "advantage": "Rich in vitamins and helps detoxify the body."
+      }
+    ],
+    "image": "https://www.themediterraneandish.com/wp-content/uploads/2023/12/TMD-Chickpea-Salad-Leads-01-Angle-Horizontal.jpg"
+  }
+]
