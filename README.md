@@ -44,51 +44,10 @@ Pawy Meals is a home cooked meal for our lovely furry friends. This plat form ab
 
 ### Prerequisites
 
-- Node.js 18.0 or higher
-- MongoDB 4.4 or higher
+- Node.js 
+- MongoDB 
 - pnpm package manager
 
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd pawy-meal
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-   Update the `.env.local` file with your configuration:
-   ```env
-   MONGODB_URI=mongodb://localhost:27017/pawy_meals
-   NODE_ENV=development
-   NEXTAUTH_SECRET=your-secret-key-here
-   NEXTAUTH_URL=http://localhost:3000
-   ```
-
-4. **Start MongoDB**
-   ```bash
-   # Using MongoDB Community Edition
-   mongod
-
-   # Or using Docker
-   docker run -d -p 27017:27017 --name mongodb mongo:latest
-   ```
-
-5. **Run the development server**
-   ```bash
-   pnpm dev
-   ```
-
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📖 API Documentation
 
