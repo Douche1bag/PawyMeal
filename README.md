@@ -1,6 +1,5 @@
-# 🐾 Pawy Meals - Pet Nutrition Management System
+# 🐾 Pawy Meals - Home Cooked Meal oder for pet
 
-A comprehensive full-stack web application for managing pet nutrition with custom meal plans, order tracking, and multi-role user management.
 
 ## 👥 Team Members
 
