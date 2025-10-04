@@ -45,6 +45,8 @@ export default function AdminDashboard() {
   });
   const [employees, setEmployees] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -69,12 +71,12 @@ export default function AdminDashboard() {
       const menuResponse = await fetch('/api/menu');
       const menuData = await menuResponse.json();
 
-      // Fetch orders (if exists)
-      let orderCount = 0;
+      // Fetch orders
+      let orders = [];
       try {
         const orderResponse = await fetch('/api/order');
         const orderData = await orderResponse.json();
-        orderCount = orderData.success ? orderData.data?.length || 0 : 0;
+        orders = orderData.success ? orderData.data || [] : [];
       } catch (e) {
         console.log('Orders not available yet');
       }
@@ -82,11 +84,13 @@ export default function AdminDashboard() {
       if (employeeData.success && customerData.success && menuData.success) {
         setEmployees(employeeData.data || []);
         setCustomers(customerData.data || []);
+        setMenuItems(menuData.data || []);
+        setOrders(orders);
         
         setStats({
           totalEmployees: employeeData.data?.length || 0,
           totalCustomers: customerData.data?.length || 0,
-          totalOrders: orderCount,
+          totalOrders: orders.length,
           totalMenuItems: menuData.data?.length || 0
         });
       } else {
@@ -146,7 +150,7 @@ export default function AdminDashboard() {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4, maxHeight: 'calc(100vh - 100px)', overflowY: 'auto', overflowX: 'hidden' }}>
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
             {error}
@@ -189,7 +193,8 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
+        {/* First Row - Employees and Customers */}
+        <Grid container spacing={3} sx={{ mb: 3 }}>
           {/* Employees Section */}
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3 }}>
@@ -285,6 +290,115 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
 
+        {/* Second Row - Menu Items and Orders */}
+        <Grid container spacing={3}>
+          {/* Menu Items Section */}
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3 }}>
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h6" component="h2">
+                  Menu Items
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<RestaurantIcon />}
+                  size="small"
+                  onClick={() => router.push('/admin/menu')}
+                >
+                  Manage
+                </Button>
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Description</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {menuItems.slice(0, 5).map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={item.isActive ? 'Available' : 'Unavailable'}
+                            color={item.isActive ? 'success' : 'error'}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>{item.description?.substring(0, 40)}...</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {menuItems.length === 0 && (
+                <Typography variant="body2" color="textSecondary" align="center" sx={{ mt: 2 }}>
+                  No menu items found
+                </Typography>
+              )}
+            </Paper>
+          </Grid>
+
+          {/* Orders Section */}
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3 }}>
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h6" component="h2">
+                  Recent Orders
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<OrderIcon />}
+                  size="small"
+                  onClick={() => router.push('/admin/orders')}
+                >
+                  Manage
+                </Button>
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Order ID</TableCell>
+                      <TableCell>Customer</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Price</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {orders.slice(0, 5).map((order) => (
+                      <TableRow key={order._id}>
+                        <TableCell>#{order._id?.slice(-6)}</TableCell>
+                        <TableCell>{order.customer_email}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={order.order_status}
+                            color={
+                              order.order_status === 'completed' ? 'success' :
+                              order.order_status === 'pending' ? 'warning' :
+                              order.order_status === 'cooking' ? 'info' : 'default'
+                            }
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>฿{order.price}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {orders.length === 0 && (
+                <Typography variant="body2" color="textSecondary" align="center" sx={{ mt: 2 }}>
+                  No orders found
+                </Typography>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+
         {/* Quick Actions */}
         <Paper sx={{ p: 3, mt: 3 }}>
           <Typography variant="h6" component="h2" gutterBottom>
@@ -295,7 +409,7 @@ export default function AdminDashboard() {
               <Button
                 variant="outlined"
                 startIcon={<AddIcon />}
-                onClick={() => router.push('/admin/employees/new')}
+                onClick={() => router.push('/admin/employees?action=add')}
               >
                 Add Employee
               </Button>
