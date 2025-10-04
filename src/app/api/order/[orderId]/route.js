@@ -49,7 +49,7 @@ export async function PUT(request, { params }) {
     delete body.updatedAt;
     
     // If status is being updated to "Delivered", set actual delivery date
-    if (body.status === 'Delivered' && !body.actualDeliveryDate) {
+    if (body.order_status === 'delivered' && !body.actualDeliveryDate) {
       body.actualDeliveryDate = new Date();
     }
     
@@ -104,7 +104,7 @@ export async function DELETE(request, { params }) {
       orderId,
       { 
         $set: { 
-          status: 'Cancelled',
+          order_status: 'cancelled',
           cancellationReason: reason,
           paymentStatus: 'Refunded'
         } 

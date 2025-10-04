@@ -11,6 +11,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const role = searchParams.get('role');
     const email = searchParams.get('email');
+    const showPassword = searchParams.get('showPassword') === 'true';
     const page = parseInt(searchParams.get('page')) || 1;
     const limit = parseInt(searchParams.get('limit')) || 10;
     const skip = (page - 1) * limit;
@@ -21,8 +22,9 @@ export async function GET(request) {
     if (email) filter.email = email;
 
     // Get employees with pagination
+    const selectFields = showPassword ? '' : '-password'; // Include password if showPassword is true
     const employees = await Employee.find(filter)
-      .select('-password') // Exclude password from response
+      .select(selectFields)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -140,6 +142,11 @@ export async function PUT(request) {
     // Remove fields that shouldn't be updated
     delete updateData._id;
     delete updateData.createdAt;
+    
+    // Hash password if it's being updated
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 12);
+    }
     
     const employee = await Employee.findByIdAndUpdate(
       id,

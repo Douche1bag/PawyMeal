@@ -344,7 +344,7 @@ const SignupAndOrder = () => {
                         {meal.meal_name}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        ${meal.price}
+                        ฿{meal.price}
                       </Typography>
                     </CardContent>
                   </Card>

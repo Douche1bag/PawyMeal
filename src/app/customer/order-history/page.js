@@ -251,7 +251,7 @@ export default function OrderHistory() {
                               </Typography>
                             </Box>
                             <Typography variant="h6" color="success.main" fontWeight="bold">
-                              ${order.price}
+                              ฿{order.price}
                             </Typography>
                           </Box>
 
@@ -366,7 +366,7 @@ export default function OrderHistory() {
               <Grid item xs={12} sm={3}>
                 <Box textAlign="center">
                   <Typography variant="h4" color="success.main">
-                    ${orders.reduce((total, order) => total + (parseFloat(order.price) || 0), 0).toFixed(2)}
+                    ฿{orders.reduce((total, order) => total + (parseFloat(order.price) || 0), 0).toFixed(2)}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     Total Spent

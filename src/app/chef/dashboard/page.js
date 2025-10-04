@@ -81,11 +81,11 @@ export default function ChefDashboard() {
         
         // Calculate stats
         const pendingOrders = orders.filter(order => 
-          order.status === 'pending' || order.status === 'preparing'
+          order.order_status === 'pending' || order.order_status === 'preparing'
         ).length;
         
         const completedOrders = orders.filter(order => 
-          order.status === 'completed' || order.status === 'delivered'
+          order.order_status === 'completed' || order.order_status === 'delivered'
         ).length;
 
         // Today's orders (you can adjust this logic based on your date field)
@@ -231,14 +231,14 @@ export default function ChefDashboard() {
                   </TableHead>
                   <TableBody>
                     {menuItems.slice(0, 8).map((item) => (
-                      <TableRow key={item._id}>
-                        <TableCell>{item.meal_name}</TableCell>
-                        <TableCell>{item.category || 'General'}</TableCell>
-                        <TableCell>${item.price}</TableCell>
+                      <TableRow key={item.id}>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>Pet Meal</TableCell>
+                        <TableCell>฿0</TableCell>
                         <TableCell>
                           <Chip
-                            label={item.availability ? 'Available' : 'Unavailable'}
-                            color={item.availability ? 'success' : 'error'}
+                            label={item.isActive ? 'Available' : 'Unavailable'}
+                            color={item.isActive ? 'success' : 'error'}
                             size="small"
                           />
                         </TableCell>
@@ -277,8 +277,8 @@ export default function ChefDashboard() {
                       <OrderIcon color="primary" />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`Order #${order._id?.slice(-6) || index + 1}`}
-                      secondary={`${order.items?.length || 1} items - ${order.status || 'pending'}`}
+                      primary={`Order #${order._id?.slice(-6) || (index + 1).toString().padStart(6, '0')}`}
+                      secondary={`${order.menuName || 'Menu Item'} - ${order.petName || 'Pet'} - ${order.order_status || 'pending'}`}
                     />
                   </ListItem>
                 ))}
@@ -298,15 +298,7 @@ export default function ChefDashboard() {
             Kitchen Operations
           </Typography>
           <Grid container spacing={2}>
-            <Grid item>
-              <Button
-                variant="outlined"
-                startIcon={<AddIcon />}
-                onClick={() => router.push('/chef/menu/new')}
-              >
-                Add Menu Item
-              </Button>
-            </Grid>
+
             <Grid item>
               <Button
                 variant="outlined"

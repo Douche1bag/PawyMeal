@@ -210,7 +210,7 @@ const QuickOrderModal = ({ open, onClose, onSubmit, loading, pets }) => {
                 >
                   {plans.map((plan) => (
                     <MenuItem key={plan.name} value={plan.name}>
-                      {plan.name} - ${plan.price}
+                      {plan.name} - ฿{plan.price}
                     </MenuItem>
                   ))}
                 </Select>
@@ -342,7 +342,7 @@ const QuickOrderModal = ({ open, onClose, onSubmit, loading, pets }) => {
             <Grid item xs={12} key="quickorder-total">
               <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
                 <Typography variant="h6">
-                  Total: ${totalPrice.toLocaleString()}
+                  Total: ฿{totalPrice.toLocaleString()}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {orderData.plan} Plan
@@ -901,7 +901,7 @@ export default function CustomerDashboard() {
                               </Typography>
                             </Box>
                             <Typography variant="body2" color="success.main" fontWeight="bold">
-                              ${order.price}
+                              ฿{order.price}
                             </Typography>
                           </Box>
                           <Box>

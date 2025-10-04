@@ -139,7 +139,7 @@ const QuickOrderModal = ({ open, onClose, onSubmit, loading, pets, menus, setMen
                 >
                   {plans.map((plan) => (
                     <MenuItem key={plan.name} value={plan.name}>
-                      {plan.name} - ${plan.price}
+                      {plan.name} - ฿{plan.price}
                     </MenuItem>
                   ))}
                 </Select>
@@ -249,7 +249,7 @@ const QuickOrderModal = ({ open, onClose, onSubmit, loading, pets, menus, setMen
             <Grid item xs={12} key="quickorder-total">
               <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
                 <Typography variant="h6">
-                  Total: ${plans.find(p => p.name === orderData.plan)?.price || 0}
+                  Total: ฿{plans.find(p => p.name === orderData.plan)?.price || 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {orderData.plan} plan for 1 pet
