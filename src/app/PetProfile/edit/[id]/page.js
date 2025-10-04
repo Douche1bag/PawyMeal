@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
   Container,
@@ -30,7 +30,7 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 
-const EditPetProfile = () => {
+const EditPetProfileContent = () => {
   const router = useRouter();
   const { id } = useParams();
   const [allergies, setAllergies] = useState([]);
@@ -463,6 +463,22 @@ const EditPetProfile = () => {
         </Paper>
       </Container>
     </>
+  );
+};
+
+const EditPetProfile = () => {
+  return (
+    <Suspense fallback={
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+            <CircularProgress />
+          </div>
+        </Paper>
+      </Container>
+    }>
+      <EditPetProfileContent />
+    </Suspense>
   );
 };
 
