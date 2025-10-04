@@ -11,6 +11,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [orders, setOrders] = useState([]);
+  const [allergyOptions, setAllergyOptions] = useState([]);
 
   // Get logged-in user data from session
   const getUserSession = () => {

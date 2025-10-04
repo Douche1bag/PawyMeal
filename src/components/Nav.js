@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import PetsIcon from "@mui/icons-material/Pets";
 
 const Nav = () => {
   const router = useRouter();
@@ -29,8 +30,9 @@ const Nav = () => {
   if (isLoading) {
     return (
       <nav className="flex justify-between items-center px-20 py-6">
-        <Link href="/" className="text-2xl font-bold">
-          LOGO
+        <Link href="/" className="text-2xl font-bold flex items-center gap-2">
+          <PetsIcon sx={{ fontSize: 32, color: '#FF6B35' }} />
+          <span>Pawy Meal</span>
         </Link>
         <div className="flex gap-4">
           <Link href="/recipe">
@@ -52,8 +54,9 @@ const Nav = () => {
 
   return (
     <nav className="flex justify-between items-center px-20 py-6">
-      <Link href="/" className="text-2xl font-bold">
-        LOGO
+      <Link href="/" className="text-2xl font-bold flex items-center gap-2">
+        <PetsIcon sx={{ fontSize: 32, color: '#FF6B35' }} />
+        <span>Pawy Meal</span>
       </Link>
       <div className="flex gap-4">
         <Link href="/recipe">

@@ -75,8 +75,17 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
+    // Prepare menu data
+    const menuData = {
+      name: body.name,
+      description: body.description,
+      image_url: body.image_url || null,
+      ingredients: body.ingredients || [],
+      isActive: body.isActive !== undefined ? body.isActive : true
+    };
+
     // Create new menu
-    const menu = new Menu(body);
+    const menu = new Menu(menuData);
     await menu.save();
 
     return NextResponse.json({

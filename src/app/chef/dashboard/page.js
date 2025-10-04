@@ -225,7 +225,6 @@ export default function ChefDashboard() {
                     <TableRow>
                       <TableCell>Name</TableCell>
                       <TableCell>Category</TableCell>
-                      <TableCell>Price</TableCell>
                       <TableCell>Status</TableCell>
                     </TableRow>
                   </TableHead>
@@ -234,7 +233,6 @@ export default function ChefDashboard() {
                       <TableRow key={item.id}>
                         <TableCell>{item.name}</TableCell>
                         <TableCell>Pet Meal</TableCell>
-                        <TableCell>฿0</TableCell>
                         <TableCell>
                           <Chip
                             label={item.isActive ? 'Available' : 'Unavailable'}

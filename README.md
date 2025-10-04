@@ -9,14 +9,14 @@ A comprehensive full-stack web application for managing pet nutrition with custo
 
 ## 📋 Project Description
 
-Pawy Meals is a pet nutrition management platform that connects pet owners with professional chefs to provide customized meal plans for pets. The system supports multiple user roles including customers, chefs, administrators, and delivery drivers.
+Pawy Meals is a home cooked meal for our lovely furry friends. This plat form able to let customer make the meal order for each pet. Admin and cook are able to use this platform to organized meal and order. 
 
 ### 🎯 Key Features
 
-- **Multi-Role Authentication**: Customer, Chef, Admin, and Delivery Driver roles
+- **Multi-Role Authentication**: Customer, Chef, Admin
 - **Pet Profile Management**: Detailed pet profiles with dietary requirements and health information
 - **Custom Meal Planning**: Nutritionally balanced meals tailored to individual pets
-- **Order Management**: Complete order lifecycle from creation to delivery
+- **Order Management**: Complete order lifecycle 
 - **Admin Dashboard**: Comprehensive management tools for administrators
 - **Chef Interface**: Tools for meal preparation and order management
 - **Delivery Tracking**: Real-time order status updates
@@ -26,31 +26,20 @@ Pawy Meals is a pet nutrition management platform that connects pet owners with 
 #### 1. **Pet** 🐕
 - Pet profiles with breed, age, weight, size
 - Activity levels and dietary requirements
-- Allergies and medical conditions
-- Preferred proteins and restrictions
+- Allergies 
+
 
 #### 2. **Meal** 🍽️
-- Detailed meal information with ingredients
-- Nutritional breakdown (calories, protein, fats, etc.)
-- Cooking instructions and preparation time
-- Suitability for different pet types
-- Pricing and availability
+- Detailed meal information 
+- Pricing and availability 
+- Plan for the meal
 
 #### 3. **Order** 📦
 - Customer and pet information
-- Selected meals and quantities
-- Delivery address and scheduling
-- Payment and order status tracking
-- Chef assignment and delivery tracking
+- Selected meals and plan
+- Delivery address 
+- Order status tracking
 
-### 🛠️ Technology Stack
-
-- **Frontend**: Next.js 15, React 19, Material-UI (MUI)
-- **Backend**: Next.js API Routes, RESTful API
-- **Database**: MongoDB with Mongoose ODM
-- **Package Manager**: pnpm
-- **Authentication**: Custom JWT-based auth
-- **Styling**: Material-UI Components + Custom CSS
 
 ## 🚀 Getting Started
 
@@ -104,67 +93,149 @@ Pawy Meals is a pet nutrition management platform that connects pet owners with 
 
 ## 📖 API Documentation
 
+### � Authentication & User Management
+
+#### POST /api/customer
+- **Description**: Register a new customer account
+- **Required Fields**: `username`, `email`, `firstName`, `lastName`, `phoneNumber`, `password`, `streetAddress`, `city`, `state`, `zipCode`
+- **Optional Fields**: `accountType` (defaults to 'Customer')
+- **Response**: Customer object (password excluded)
+
+#### GET /api/customer
+- **Description**: Retrieve customers with filtering and pagination
+- **Query Parameters**:
+  - `email`: Get specific customer by email
+  - `page`: Page number (default: 1)
+  - `limit`: Items per page (default: 10)
+- **Response**: Array of customer objects or single customer
+
+#### POST /api/employee
+- **Description**: Create employee accounts (Admin/Chef)
+- **Required Fields**: `name`, `email`, `password`, `role`, `phone`
+- **Optional Fields**: `isActive` (defaults to true)
+
+#### GET /api/employee
+- **Description**: Retrieve all employees
+- **Response**: Array of employee objects
+
+#### GET /api/user
+- **Description**: General user management endpoint
+- **Query Parameters**: `role`, `isActive`
+
+#### POST /api/login
+- **Description**: Authenticate users (all roles)
+- **Required Fields**: `email`, `password`
+- **Response**: User session data
+
 ### 🐾 Pet Management API
 
 #### GET /api/pet
-- **Description**: Retrieve pets with filtering and pagination
+- **Description**: Retrieve pets by customer
 - **Query Parameters**:
-  - `ownerId`: Filter by owner ID
-  - `breed`: Filter by breed
-  - `size`: Filter by size (Small, Medium, Large, Extra Large)
-  - `activityLevel`: Filter by activity level
-  - `page`: Page number (default: 1)
-  - `limit`: Items per page (default: 10)
+  - `customer_id`: Filter by customer ID (required)
+- **Response**: Array of pet objects
 
 #### POST /api/pet
 - **Description**: Create a new pet profile
-- **Required Fields**: name, breed, age, weight, size, activityLevel, ownerId
+- **Required Fields**: `name`, `breed`, `age`, `weight`, `gender`, `neutered`, `bodyCondition`, `activityLevel`
+- **Optional Fields**: `allergies` (array), `customer_id`
+- **Auto-calculated**: `size` (based on weight)
+
+#### GET /api/pet/[id]
+- **Description**: Get specific pet by ID
+- **Response**: Pet object
 
 #### PUT /api/pet/[id]
-- **Description**: Update a specific pet profile
+- **Description**: Update specific pet profile
+- **Fields**: All pet fields are updatable
 
 #### DELETE /api/pet/[id]
-- **Description**: Soft delete a pet profile
+- **Description**: Delete pet profile
 
-### 🍽️ Meal Management API
+### 🍽️ Menu Management API
 
 #### GET /api/menu
-- **Description**: Retrieve meals with filtering
+- **Description**: Retrieve all active menu items with pagination
 - **Query Parameters**:
-  - `primaryProtein`: Filter by protein type
-  - `category`: Filter by meal category
-  - `minPrice`/`maxPrice`: Price range filtering
-  - `difficulty`: Filter by cooking difficulty
-  - `minRating`: Filter by minimum rating
+  - `page`: Page number (default: 1)
+  - `limit`: Items per page (default: 12)
+- **Response**: Paginated menu items with ingredients populated
 
 #### POST /api/menu
-- **Description**: Create a new meal
-- **Required Fields**: name, description, primaryProtein, ingredients, nutrition, price, servingSize, preparationTime, category
+- **Description**: Create a new menu item
+- **Required Fields**: `name`, `description`
+- **Optional Fields**: `image_url`, `ingredients` (array), `isActive`
+- **Response**: Created menu item
+
+#### GET /api/menu/[id]
+- **Description**: Get specific menu item by ID
+- **Response**: Menu item with populated ingredients
+
+#### PUT /api/menu/[id]
+- **Description**: Update specific menu item
+- **Fields**: All menu fields are updatable
+
+#### DELETE /api/menu
+- **Description**: Soft delete multiple menu items
+- **Query Parameters**: `ids` (comma-separated menu IDs)
 
 ### 📦 Order Management API
 
 #### GET /api/order
-- **Description**: Retrieve orders with filtering
+- **Description**: Retrieve all orders with pagination
 - **Query Parameters**:
-  - `customerId`: Filter by customer
-  - `status`: Filter by order status
-  - `assignedChef`: Filter by assigned chef
+  - `page`: Page number (default: 1)
+  - `limit`: Items per page (default: 20)
+- **Response**: Paginated orders array
 
 #### POST /api/order
 - **Description**: Create a new order
-- **Required Fields**: customerId, customerName, customerEmail, items, paymentMethod, deliveryAddress
+- **Required Fields**: `plan`, `quantity`, `price`, `customer_email`, `selectedMenu`, `selectedPet`
+- **Auto-generated**: `date_order`, `order_status` ('pending')
+- **Response**: Created order object
 
-### 👥 User Management API
+#### GET /api/order/[orderId]
+- **Description**: Get specific order by ID
+- **Response**: Order object
 
-#### GET /api/user
-- **Description**: Retrieve users (Admin only)
-- **Query Parameters**:
-  - `role`: Filter by user role
-  - `isActive`: Filter by active status
+#### PUT /api/order
+- **Description**: Bulk update orders (status changes)
+- **Required Fields**: `ids` (array), `updateData`
+- **Common use**: Status updates for order management
 
-#### POST /api/user
-- **Description**: Register a new user
-- **Required Fields**: username, email, password, firstName, lastName, phone
+### 🍲 Recipe Management API
+
+#### GET /api/recipe
+- **Description**: Retrieve all recipes
+- **Response**: Array of recipe objects
+
+#### POST /api/recipe
+- **Description**: Create a new recipe
+- **Required Fields**: `name`, `ingredients`, `instructions`
+- **Optional Fields**: `description`, `cookingTime`, `servings`
+
+### 🧾 Ingredient Management API
+
+#### GET /api/ingredients
+- **Description**: Retrieve all available ingredients
+- **Response**: Array of ingredient objects for recipe/menu creation
+
+### 📤 File Upload API
+
+#### POST /api/upload
+- **Description**: Upload images for menu items
+- **File Requirements**: 
+  - Formats: JPEG, PNG, WebP
+  - Max size: 5MB
+  - Auto-generates unique filename with timestamp
+- **Response**: File URL for database storage
+
+### 🔧 Utility APIs
+
+#### POST /api/fix-db
+- **Description**: Database maintenance endpoint (removes old indexes)
+- **Usage**: Fix database schema conflicts
+- **Response**: Success/failure status
 
 ## 🖼️ Screenshots
 
@@ -202,47 +273,383 @@ Pawy Meals is a pet nutrition management platform that connects pet owners with 
 
 ## 🗄️ Database Schema
 
-### Collections Overview
+### MongoDB Collections
 
+#### 👤 Customer Collection
 ```javascript
-// Pet Collection
 {
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  accountType: {
+    type: String,
+    enum: ['Customer', 'Admin', 'Chef'],
+    default: 'Customer'
+  },
+  streetAddress: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
+  },
+  zipCode: {
+    type: String,
+    required: true
+  },
+  // Legacy fields for backward compatibility
   name: String,
-  breed: String,
-  age: Number,
-  weight: Number,
-  size: Enum['Small', 'Medium', 'Large', 'Extra Large'],
-  activityLevel: Enum['Low', 'Moderate', 'High', 'Very High'],
-  allergies: [String],
-  medicalConditions: [String],
-  ownerId: String,
-  isActive: Boolean
-}
-
-// Meal Collection
-{
-  name: String,
-  description: String,
-  primaryProtein: Enum['Chicken', 'Beef', 'Fish', ...],
-  ingredients: [IngredientSchema],
-  nutrition: NutritionSchema,
-  price: Number,
-  preparationTime: Number,
-  category: Enum['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Treat'],
-  isAvailable: Boolean
-}
-
-// Order Collection
-{
-  orderNumber: String,
-  customerId: String,
-  items: [OrderItemSchema],
-  totalAmount: Number,
-  status: Enum['Pending', 'Confirmed', 'Preparing', 'Ready', 'Out for Delivery', 'Delivered', 'Cancelled'],
-  deliveryAddress: AddressSchema,
-  scheduledDeliveryDate: Date
+  mobile_no: String,
+  address: String,
+  zipcode: String,
+  memberNumber: {
+    type: String,
+    sparse: true,
+    unique: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 }
 ```
+
+#### 👨‍💼 Employee Collection
+```javascript
+{
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: ['admin', 'chef', 'delivery']
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+#### 🐾 Pet Collection
+```javascript
+{
+  name: {
+    type: String,
+    required: true
+  },
+  breed: {
+    type: String,
+    required: true
+  },
+  age: {
+    type: Number,
+    required: true
+  },
+  weight: {
+    type: Number,
+    required: true
+  },
+  size: {
+    type: String,
+    enum: ['small', 'medium', 'large'],
+    required: true
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female'],
+    required: true
+  },
+  neutered: {
+    type: Boolean,
+    required: true
+  },
+  allergies: [{
+    type: String
+  }],
+  bodyCondition: {
+    type: String,
+    enum: ['underweight', 'ideal', 'overweight'],
+    required: true
+  },
+  activityLevel: {
+    type: String,
+    enum: ['low', 'moderate', 'high'],
+    required: true
+  },
+  customer_id: {
+    type: String,
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+#### 🍽️ Menu Collection
+```javascript
+{
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  description: {
+    type: String
+  },
+  image_url: {
+    type: String
+  },
+  ingredients: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ingredient'
+  }],
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+#### 🥕 Ingredient Collection
+```javascript
+{
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  category: {
+    type: String,
+    required: true
+  },
+  nutritionalInfo: {
+    protein: Number,
+    fat: Number,
+    carbs: Number,
+    fiber: Number,
+    calories: Number
+  },
+  allergenInfo: [{
+    type: String
+  }],
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+#### 📦 Order Collection
+```javascript
+{
+  plan: {
+    type: String,
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    default: 1
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  date_order: {
+    type: Date,
+    required: true,
+    default: Date.now
+  },
+  customer_email: {
+    type: String,
+    required: true
+  },
+  order_status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'preparing', 'cooking', 'ready', 'delivered', 'cancelled'],
+    default: 'pending'
+  },
+  selectedMenu: {
+    type: String,
+    required: true
+  },
+  menuName: String,
+  menuDescription: String,
+  menuIngredients: [String],
+  menuPrice: Number,
+  selectedPet: {
+    type: String,
+    required: true
+  },
+  petName: String,
+  petBreed: String,
+  petAge: Number,
+  petWeight: Number,
+  petAllergies: [String],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+#### 📝 Recipe Collection
+```javascript
+{
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  description: String,
+  ingredients: [{
+    name: String,
+    quantity: String,
+    unit: String
+  }],
+  instructions: [{
+    step: Number,
+    description: String,
+    duration: Number // in minutes
+  }],
+  cookingTime: {
+    type: Number // in minutes
+  },
+  servings: Number,
+  difficulty: {
+    type: String,
+    enum: ['easy', 'medium', 'hard'],
+    default: 'medium'
+  },
+  nutritionalInfo: {
+    calories: Number,
+    protein: Number,
+    fat: Number,
+    carbs: Number,
+    fiber: Number
+  },
+  tags: [String],
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdBy: String, // Employee ID
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+### Database Relationships
+
+- **Customer** ↔ **Pet**: One-to-Many (customer_id)
+- **Customer** ↔ **Order**: One-to-Many (customer_email)
+- **Pet** ↔ **Order**: Many-to-One (selectedPet)
+- **Menu** ↔ **Order**: Many-to-One (selectedMenu)
+- **Menu** ↔ **Ingredient**: Many-to-Many (ingredients array with ObjectId refs)
+- **Employee** ↔ **Recipe**: One-to-Many (createdBy)
+
+### Indexes
+
+- **Customer**: `username`, `email`, `phoneNumber` (unique)
+- **Employee**: `email` (unique)
+- **Pet**: `customer_id`, `name`
+- **Menu**: `name` (unique), `isActive`
+- **Order**: `customer_email`, `order_status`, `date_order`
+- **Recipe**: `name` (unique), `tags`, `difficulty`
+- **Ingredient**: `name` (unique), `category`
 
 ## 🔐 User Roles & Permissions
 
@@ -256,7 +663,6 @@ Pawy Meals is a pet nutrition management platform that connects pet owners with 
 - View assigned orders
 - Update order preparation status
 - Manage meal recipes
-- Track preparation times
 
 ### 👨‍💼 Admin
 - Full system access
@@ -264,72 +670,15 @@ Pawy Meals is a pet nutrition management platform that connects pet owners with 
 - Order management
 - System analytics and reports
 
-### 🚚 Delivery Driver
-- View assigned deliveries
-- Update delivery status
-- Access delivery routes
-- Customer communication
 
-## 🧪 Testing
 
-```bash
-# Run unit tests
-pnpm test
-
-# Run integration tests
-pnpm test:integration
-
-# Run end-to-end tests
-pnpm test:e2e
-```
-
-## 📦 Deployment
-
-### Using Vercel (Recommended)
-
-1. **Deploy to Vercel**
-   ```bash
-   pnpm build
-   vercel --prod
-   ```
-
-2. **Set environment variables in Vercel dashboard**
-   - `MONGODB_URI`
-   - `NEXTAUTH_SECRET`
-   - `NEXTAUTH_URL`
-
-### Using Docker
-
-```bash
-# Build the Docker image
-docker build -t pawy-meals .
-
-# Run the container
-docker run -p 3000:3000 --env-file .env.local pawy-meals
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## 🙏 Acknowledgments
 
 - Material-UI for the component library
 - MongoDB for the database solution
 - Next.js team for the framework
-- All pet nutrition experts who provided guidance
 
-## 📞 Support
-
-For support, email support@pawymeals.com or join our Discord channel.
 
 ---
 

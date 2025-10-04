@@ -68,8 +68,8 @@ export async function POST(request) {
     
     const body = await request.json();
     
-    // Validate required fields (matching SQL schema)
-    const requiredFields = ['name', 'mobile_no', 'password', 'email'];
+    // Validate required fields for new registration form
+    const requiredFields = ['username', 'email', 'firstName', 'lastName', 'phoneNumber', 'password', 'streetAddress', 'city', 'state', 'zipCode'];
     const missingFields = requiredFields.filter(field => !body[field]);
     
     if (missingFields.length > 0) {
@@ -83,23 +83,42 @@ export async function POST(request) {
     const existingCustomer = await Customer.findOne({
       $or: [
         { email: body.email },
-        { mobile_no: body.mobile_no }
+        { username: body.username },
+        { phoneNumber: body.phoneNumber }
       ]
     });
 
     if (existingCustomer) {
       return NextResponse.json({
         success: false,
-        error: 'Customer with this email or mobile number already exists'
+        error: 'Customer with this email, username, or phone number already exists'
       }, { status: 400 });
     }
 
     // Hash password before creating customer
     const hashedPassword = await bcrypt.hash(body.password, 12);
-    const customer = new Customer({
-      ...body,
-      password: hashedPassword
-    });
+    
+    // Create customer data with new fields
+    const customerData = {
+      username: body.username,
+      email: body.email,
+      firstName: body.firstName,
+      lastName: body.lastName,
+      phoneNumber: body.phoneNumber,
+      password: hashedPassword,
+      accountType: body.accountType || 'Customer',
+      streetAddress: body.streetAddress,
+      city: body.city,
+      state: body.state,
+      zipCode: body.zipCode,
+      // Set legacy fields for backward compatibility
+      name: `${body.firstName} ${body.lastName}`,
+      mobile_no: body.phoneNumber,
+      address: body.streetAddress,
+      zipcode: body.zipCode
+    };
+
+    const customer = new Customer(customerData);
     await customer.save();
 
     // Remove password from response

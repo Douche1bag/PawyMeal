@@ -91,13 +91,19 @@ export default function RegisterPage() {
     try {
       const { confirmPassword, role, firstName, lastName, phone, address, ...otherData } = formData;
       
-      // Map form data to Customer model fields
+      // Map form data to new Customer model fields
       const submitData = {
-        name: `${firstName} ${lastName}`.trim(),
+        username: formData.username,
         email: formData.email,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phone,
         password: formData.password,
-        mobile_no: phone,
-        address: `${address.street}, ${address.city}, ${address.state} ${address.zipCode}, ${address.country}`
+        accountType: 'Customer', // Default to Customer
+        streetAddress: address.street,
+        city: address.city,
+        state: address.state,
+        zipCode: address.zipCode
       };
 
       const response = await fetch('/api/customer', {

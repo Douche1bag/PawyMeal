@@ -421,7 +421,10 @@ const HomePage = () => {
       <div className="flex justify-between items-center px-20 py-20">
         {/* Left Side Content */}
         <div className="w-1/2">
-          <h1 className="text-4xl font-bold text-gray-800">Pawy Meal</h1>
+          <div className="flex items-center gap-3 mb-4">
+            <PetsIcon sx={{ fontSize: 48, color: '#FF6B35' }} />
+            <h1 className="text-4xl font-bold text-gray-800">Pawy Meal</h1>
+          </div>
           <p className="mt-4 text-gray-600 text-lg max-w-md">
             SWITCHING YOUR DOG'S DIET TO FRESH FOOD PROMOTES A HEALTHY MIND &
             BODY WHILE INCREASING THEIR LONG LIFESPAN
