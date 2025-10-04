@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Container,
@@ -39,7 +39,26 @@ import {
   Delete as DeleteIcon
 } from '@mui/icons-material';
 
-export default function AdminEmployees() {
+// Component that handles search params (needs Suspense)
+function EmployeesWithSearchParams({ setAddDialogOpen }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Check if we should open the add dialog from URL parameter
+    const action = searchParams.get('action');
+    if (action === 'add') {
+      setAddDialogOpen(true);
+      // Clean up URL without the parameter
+      const url = new URL(window.location);
+      url.searchParams.delete('action');
+      window.history.replaceState({}, '', url.pathname);
+    }
+  }, [searchParams, setAddDialogOpen]);
+
+  return null; // This component only handles side effects
+}
+
+function AdminEmployeesContent() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -54,21 +73,10 @@ export default function AdminEmployees() {
     role: 'Cook'
   });
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     fetchEmployees();
-    
-    // Check if we should open the add dialog from URL parameter
-    const action = searchParams.get('action');
-    if (action === 'add') {
-      setAddDialogOpen(true);
-      // Clean up URL without the parameter
-      const url = new URL(window.location);
-      url.searchParams.delete('action');
-      window.history.replaceState({}, '', url.pathname);
-    }
-  }, [searchParams]);
+  }, []);
 
   const fetchEmployees = async () => {
     try {
@@ -442,7 +450,27 @@ export default function AdminEmployees() {
             <Button onClick={handleEditEmployee} variant="contained">Update Employee</Button>
           </DialogActions>
         </Dialog>
+
+        {/* Suspense wrapper for search params */}
+        <Suspense fallback={null}>
+          <EmployeesWithSearchParams setAddDialogOpen={setAddDialogOpen} />
+        </Suspense>
       </Container>
     </>
+  );
+}
+
+// Main component with Suspense boundary
+export default function AdminEmployees() {
+  return (
+    <Suspense fallback={
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <CircularProgress />
+        </Box>
+      </Container>
+    }>
+      <AdminEmployeesContent />
+    </Suspense>
   );
 }
