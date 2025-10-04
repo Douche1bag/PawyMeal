@@ -11,7 +11,7 @@ const PetSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female'],
+    enum: ['male', 'female'],
     required: false
   },
   allergies: [{
@@ -22,33 +22,43 @@ const PetSchema = new mongoose.Schema({
     type: Number,
     required: false
   },
-  active: {
-    type: String,
-    required: false
-  },
   breed: {
     type: String,
     required: false
   },
-  body_conditions: {
+  size: {
+    type: String,
+    enum: ['small', 'medium', 'large'],
+    required: true
+  },
+  bodyCondition: {
     type: String,
     required: false
+  },
+  activityLevel: {
+    type: String,
+    required: true
   },
   neutered: {
     type: Boolean,
     default: false
   },
-  customer_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer',
-    required: true
-  }
+  customer_email: {
+    type: String,
+    required: false, // Temporarily make it optional for existing pets
+    trim: true
+  },
+
 }, {
   timestamps: true
 });
 
 // Index for efficient queries
-PetSchema.index({ customer_id: 1 });
 PetSchema.index({ breed: 1 });
 
-export default mongoose.models.Pet || mongoose.model('Pet', PetSchema);
+// Clear any existing model to avoid caching issues
+if (mongoose.models.Pet) {
+  delete mongoose.models.Pet;
+}
+
+export default mongoose.model('Pet', PetSchema);

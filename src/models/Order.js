@@ -17,10 +17,10 @@ const OrderSchema = new mongoose.Schema({
     type: Date, 
     required: true 
   },
-  customer_id: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Customer',
-    required: true 
+  customer_email: { 
+    type: String,
+    required: true,
+    trim: true
   },
   cook_employee_id: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -38,6 +38,59 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Menu'
   }],
+  
+  // Menu information (for detailed display)
+  selectedMenu: {
+    type: String,
+    required: false
+  },
+  menuName: {
+    type: String,
+    required: false
+  },
+  menuDescription: {
+    type: String,
+    required: false
+  },
+  menuIngredients: [{
+    type: String
+  }],
+  menuPrice: {
+    type: Number,
+    required: false
+  },
+  
+  // Pet information (for detailed display)
+  selectedPet: {
+    type: String,
+    required: false
+  },
+  petName: {
+    type: String,
+    required: false
+  },
+  petBreed: {
+    type: String,
+    required: false
+  },
+  petAge: {
+    type: Number,
+    required: false
+  },
+  petWeight: {
+    type: Number,
+    required: false
+  },
+  petAllergies: [{
+    type: String
+  }],
+  
+  // Special instructions
+  specialInstructions: {
+    type: String,
+    required: false
+  },
+  
   isActive: { 
     type: Boolean, 
     default: true 
@@ -52,4 +105,9 @@ const OrderSchema = new mongoose.Schema({
   }
 });
 
-export default mongoose.models.Order || mongoose.model("Order", OrderSchema);
+// Clear any existing model to avoid caching issues
+if (mongoose.models.Order) {
+  delete mongoose.models.Order;
+}
+
+export default mongoose.model('Order', OrderSchema);

@@ -1,52 +1,86 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const Settings = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("personal");
   const [userData, setUserData] = useState(null);
-  const [petData, setPetData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [allergyOptions, setAllergyOptions] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  // Get logged-in user email
-  const email = typeof window !== "undefined"
-    ? localStorage.getItem("user")?.replace(/"/g, "")
-    : null;
+  // Get logged-in user data from session
+  const getUserSession = () => {
+    if (typeof window === "undefined") return null;
+    try {
+      const session = localStorage.getItem('userSession');
+      return session ? JSON.parse(session) : null;
+    } catch (error) {
+      console.error('Error parsing user session:', error);
+      return null;
+    }
+  };
 
+  const userSession = getUserSession();
+  const email = userSession?.email || searchParams.get('email');
+
+  // Redirect to login if no user session
   useEffect(() => {
-    if (!email) {
-      setError("No user logged in.");
-      setLoading(false);
+    if (!userSession && !searchParams.get('email')) {
+      console.log('No user session found, redirecting to login');
+      router.push('/login');
       return;
     }
+  }, [userSession, searchParams, router]);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('User session:', userSession);
+    console.log('Using email:', email);
+  }, [userSession, email]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch customer data
+        console.log('Fetching customer data for email:', email);
+        
+        // Fetch customer data by email
         const customerResponse = await fetch(`/api/customer?email=${email}`);
         const customerResult = await customerResponse.json();
+        
+        console.log('Customer API response:', customerResult);
 
-        if (!customerResult.success) {
-          setError(customerResult.message);
+        if (!customerResult.success || !customerResult.data) {
+          console.error('Customer fetch failed:', customerResult.error || 'No data returned');
+          setError(`Unable to load user data for ${email}. Please try logging in again.`);
           return;
         }
 
-        // Fetch pet data using customer_id
-        const petResponse = await fetch(`/api/pet?customer_id=${customerResult.customer.customer_id}`);
-        const petResult = await petResponse.json();
+        const customer = customerResult.data;
+        console.log('Successfully loaded customer data:', customer);
 
-        // Fetch orders
-        const orderResponse = await fetch(`/api/order?customer_id=${customerResult.customer.customer_id}`);
-        const orderResult = await orderResponse.json();
+        console.log('Loaded customer data:', customer);
+        setUserData(customer);
 
-        setUserData(customerResult.customer);
-        setPetData(petResult.pet);
-        setOrders(orderResult.orders || []);
+        // Fetch orders using email-based system
+        try {
+          const orderResponse = await fetch(`/api/order?customer_email=${encodeURIComponent(email)}`);
+          const orderResult = await orderResponse.json();
+          
+          if (orderResult.success && orderResult.data) {
+            setOrders(Array.isArray(orderResult.data) ? orderResult.data : []);
+            console.log('Loaded orders:', orderResult.data);
+          } else {
+            setOrders([]);
+            console.log('No orders found for customer');
+          }
+        } catch (orderError) {
+          console.error('Order fetch error:', orderError);
+          setOrders([]);
+        }
 
       } catch (error) {
         console.error("Fetch Error:", error);
@@ -69,37 +103,24 @@ const Settings = () => {
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
-    
-    if (activeTab === "dog") {
-      setPetData(prev => ({ ...prev, [name]: value }));
-    } else {
-      setUserData(prev => ({ ...prev, [name]: value }));
-    }
+    setUserData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleUpdate = async () => {
     try {
       let response, result;
       
-      if (activeTab === "dog" && petData) {
-        // Convert neutered to boolean before sending
-        const processedPetData = {
-          ...petData,
-          neutered: petData.neutered === "true",
-          weight: parseFloat(petData.weight),
-          age: parseInt(petData.age),
+      if (userData) {
+        // Include the customer ID in the update request
+        const updateData = {
+          ...userData,
+          id: userData._id // The API expects 'id', not '_id'
         };
-
-        response = await fetch("/api/pet", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(processedPetData),
-        });
-      } else if (userData) {
+        
         response = await fetch("/api/customer", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(userData),
+          body: JSON.stringify(updateData),
         });
       }
 
@@ -123,21 +144,13 @@ const Settings = () => {
         throw new Error(result.message || 'Update failed');
       }
 
-      alert("✅ Profile updated successfully!");
+      alert("User information updated successfully!");
       
-      // Refresh the data instead of reloading the page
-      if (activeTab === "dog") {
-        const petResponse = await fetch(`/api/pet?customer_id=${userData.customer_id}`);
-        const petResult = await petResponse.json();
-        if (petResult.success) {
-          setPetData(petResult.pet);
-        }
-      } else {
-        const customerResponse = await fetch(`/api/customer?email=${email}`);
-        const customerResult = await customerResponse.json();
-        if (customerResult.success) {
-          setUserData(customerResult.customer);
-        }
+      // Refresh the user data
+      const customerResponse = await fetch(`/api/customer?email=${email}`);
+      const customerResult = await customerResponse.json();
+      if (customerResult.success && customerResult.data) {
+        setUserData(customerResult.data);
       }
     } catch (error) {
       console.error("Update Error:", error);
@@ -183,20 +196,73 @@ const Settings = () => {
     fetchAllergies();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (!userData || !petData) return <p>No data found.</p>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <p>Loading user settings...</p>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="flex flex-col justify-center items-center h-screen">
+      <p className="text-red-500 mb-4">{error}</p>
+      <div className="space-x-4">
+        <Link href="/customer/dashboard" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Back to Home
+        </Link>
+        <Link href="/login" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          Login
+        </Link>
+      </div>
+    </div>
+  );
+
+  // Show error if no user data
+  if (!userData) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <p className="text-gray-500 mb-4">No user data available. Please log in or register.</p>
+        <div className="space-x-4">
+          <Link href="/login" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Login
+          </Link>
+          <Link href="/register" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Register
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-200 p-6">
-        <Link
-          href="/"
-          className="text-2xl font-bold uppercase tracking-wide text-gray-800 hover:text-red-500 transition"
-        >
-          LOGO
-        </Link>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-blue-600">
+                ← Back to Home
+              </Link>
+              <h1 className="ml-4 text-2xl font-bold text-gray-900">Settings</h1>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500">Welcome, {userData?.name || userData?.email || 'User'}</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <aside className="w-64 bg-white shadow-sm min-h-screen p-6">
+        <div className="space-y-1">
+          <Link
+            href="/customer/dashboard"
+            className="text-xl font-bold text-gray-800 hover:text-blue-600 transition block"
+          >
+            ← Dashboard
+          </Link>
+        </div>
         <ul className="mt-6 space-y-3">
           <li
             className={`cursor-pointer p-2 rounded-md ${
@@ -206,14 +272,7 @@ const Settings = () => {
           >
             Personal Information
           </li>
-          <li
-            className={`cursor-pointer p-2 rounded-md ${
-              activeTab === "dog" ? "font-bold bg-gray-300" : ""
-            }`}
-            onClick={() => setActiveTab("dog")}
-          >
-            Your Dog
-          </li>
+
           <li
             className={`cursor-pointer p-2 rounded-md ${
               activeTab === "address" ? "font-bold bg-gray-300" : ""
@@ -258,10 +317,21 @@ const Settings = () => {
             <label>Mobile Number</label>
             <input
               type="tel"
-              name="mobile_no"
-              value={userData?.mobile_no || ""}
+              name="phone"
+              value={userData?.phone || userData?.mobile_no || ""}
               onChange={handleChange}
               className="border p-2 rounded-md"
+              placeholder="Enter your mobile number"
+            />
+
+            <label>Address</label>
+            <textarea
+              name="address"
+              value={userData?.address || ""}
+              onChange={handleChange}
+              className="border p-2 rounded-md"
+              placeholder="Enter your address"
+              rows="3"
             />
 
             <label>Email</label>
@@ -283,76 +353,7 @@ const Settings = () => {
           </div>
         )}
 
-        {/* Dog Information */}
-        {activeTab === "dog" && (
-          <div className="flex flex-col space-y-4">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={petData.name || ""}
-              onChange={handleChange}
-              className="border p-2 rounded-md"
-            />
 
-            <label>Gender</label>
-            <select
-              name="gender"
-              value={petData.gender || ""}
-              onChange={handleChange}
-              className="border p-2 rounded-md"
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-
-            <label>Age</label>
-            <input
-              type="number"
-              name="age"
-              value={petData.age || ""}
-              onChange={handleChange}
-              className="border p-2 rounded-md"
-            />
-
-            <label>Weight (kg)</label>
-            <input
-              type="number"
-              name="weight"
-              value={petData.weight || ""}
-              onChange={handleChange}
-              step="0.1"
-              className="border p-2 rounded-md"
-            />
-
-            <label>Breed</label>
-            <input
-              type="text"
-              name="breed"
-              value={petData.breed || ""}
-              onChange={handleChange}
-              className="border p-2 rounded-md"
-            />
-
-            <label>Neutered</label>
-            <select
-              name="neutered"
-              value={petData.neutered || ""}
-              onChange={handleChange}
-              className="border p-2 rounded-md"
-            >
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-
-            <button 
-              onClick={handleUpdate}
-              className="bg-black text-white py-2 rounded-md hover:bg-gray-700 transition"
-            >
-              Save Changes
-            </button>
-          </div>
-        )}
 
         {/* Address Information */}
         {activeTab === "address" && (
@@ -427,6 +428,7 @@ const Settings = () => {
           </div>
         )}
       </main>
+      </div>
     </div>
   );
 };

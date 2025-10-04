@@ -11,7 +11,7 @@ export async function GET(request, { params }) {
     
     const pet = await Pet.findById(id);
     
-    if (!pet || !pet.isActive) {
+    if (!pet) {
       return NextResponse.json({
         success: false,
         error: 'Pet not found'
@@ -83,18 +83,14 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE /api/pet/[id] - Soft delete a specific pet
+// DELETE /api/pet/[id] - Delete a specific pet
 export async function DELETE(request, { params }) {
   try {
     await connectDB();
     
     const { id } = params;
     
-    const pet = await Pet.findByIdAndUpdate(
-      id,
-      { $set: { isActive: false } },
-      { new: true }
-    );
+    const pet = await Pet.findByIdAndDelete(id);
     
     if (!pet) {
       return NextResponse.json({

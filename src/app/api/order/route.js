@@ -11,6 +11,7 @@ export async function GET(request) {
     
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customerId');
+    const customerEmail = searchParams.get('customer_email');
     const status = searchParams.get('status');
     const paymentStatus = searchParams.get('paymentStatus');
     const assignedChef = searchParams.get('assignedChef');
@@ -27,6 +28,7 @@ export async function GET(request) {
     const filter = {};
     
     if (customerId) filter.customerId = customerId;
+    if (customerEmail) filter.customer_email = customerEmail;
     if (status) filter.status = status;
     if (paymentStatus) filter.paymentStatus = paymentStatus;
     if (assignedChef) filter.assignedChef = assignedChef;
@@ -42,10 +44,8 @@ export async function GET(request) {
     const sort = {};
     sort[sortBy] = sortOrder;
 
-    // Get orders with pagination and populate related data
+    // Get orders with pagination - handle both complex and simple order formats
     const orders = await Order.find(filter)
-      .populate('items.petId', 'name breed size')
-      .populate('items.mealId', 'name imageUrl')
       .sort(sort)
       .skip(skip)
       .limit(limit);

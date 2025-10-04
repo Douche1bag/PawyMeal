@@ -72,7 +72,17 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (data.success) {
-        // Do NOT store user in localStorage
+        // Store user session data for other pages to use
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('userSession', JSON.stringify({
+            email: data.data.email,
+            name: data.data.name,
+            role: data.data.role,
+            id: data.data._id,
+            loginTime: Date.now()
+          }));
+        }
+        
         // Redirect based on role
         if (data.data.role !== loginData.role) {
           setError(`You selected ${loginData.role} but your account is registered as ${data.data.role}`);

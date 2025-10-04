@@ -1,5 +1,6 @@
 import connectDB from '../../../lib/db.js';
 import Pet from '../../../models/Pet.js';
+import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 // GET /api/pet - Get all pets with optional filtering
@@ -9,6 +10,7 @@ export async function GET(request) {
     
     const { searchParams } = new URL(request.url);
     const ownerId = searchParams.get('ownerId');
+    const customerEmail = searchParams.get('customer_email');
     const breed = searchParams.get('breed');
     const size = searchParams.get('size');
     const activityLevel = searchParams.get('activityLevel');
@@ -19,16 +21,20 @@ export async function GET(request) {
     // Build filter object
     const filter = {};
     if (ownerId) filter.ownerId = ownerId;
+    if (customerEmail) filter.customer_email = customerEmail;
     if (breed) filter.breed = new RegExp(breed, 'i');
     if (size) filter.size = size;
     if (activityLevel) filter.activityLevel = activityLevel;
-    filter.isActive = true; // Only show active pets
+    // Remove isActive filter since we don't have this field in our model
 
     // Get pets with pagination
+    console.log('Pet API: Searching with filter:', filter);
     const pets = await Pet.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
+
+    console.log('Pet API: Found pets:', pets.length);
 
     // Get total count for pagination
     const total = await Pet.countDocuments(filter);
@@ -61,7 +67,7 @@ export async function POST(request) {
     const body = await request.json();
     
     // Validate required fields
-    const requiredFields = ['name', 'breed', 'age', 'weight', 'size', 'activityLevel', 'ownerId'];
+    const requiredFields = ['name', 'breed', 'age', 'weight', 'size', 'activityLevel'];
     const missingFields = requiredFields.filter(field => !body[field]);
     
     if (missingFields.length > 0) {
