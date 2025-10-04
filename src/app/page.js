@@ -436,12 +436,19 @@ const HomePage = () => {
               {isLoggedIn ? "Order Meal" : "Sign Up & Order"}
             </button>
             
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <button 
                 onClick={() => router.push('/customer/dashboard')}
                 className="px-6 py-3 text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-md transition border border-gray-300"
               >
                 Go to Dashboard
+              </button>
+            ) : (
+              <button 
+                onClick={() => router.push('/login')}
+                className="px-6 py-3 text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-md transition border border-gray-300"
+              >
+                Login
               </button>
             )}
           </div>
