@@ -199,10 +199,10 @@ Pawy Meals is a home cooked meal for our lovely furry friends. This plat form ab
 
 ### 🏠 Home Page
 ![Home Page](./screenshots/home.png)
-*Main landing page with role-based navigation*
+*Main landing page with navigation*
 
 ### 🔐 Login System
-![Login Page](./screenshots/login.png)
+![Login Page](./screenshots/login1.png)
 *Multi-role login with role selection*
 
 ### 📱 Customer Dashboard
