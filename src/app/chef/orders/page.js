@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -50,7 +53,7 @@ export default function ChefOrders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/order');
+      const response = await fetch(`${API_BASE}/order`);
       const data = await response.json();
       
       if (data.success) {
@@ -68,7 +71,7 @@ export default function ChefOrders() {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const response = await fetch('/api/order', {
+      const response = await fetch(`${API_BASE}/order`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

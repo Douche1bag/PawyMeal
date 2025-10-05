@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 const SignupAndOrder = () => {
   const router = useRouter();
   const [allergies, setAllergies] = useState([]);
@@ -35,7 +37,7 @@ const SignupAndOrder = () => {
       });
 
     // Load dog breeds from JSON file
-    fetch("/api/menu")
+    fetch(`${API_BASE}/menu`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -139,7 +141,7 @@ const SignupAndOrder = () => {
 
       console.log("Sending customer data:", customerData); // Debug log
 
-      const customerResponse = await fetch("/api/customer", {
+      const customerResponse = await fetch(`${API_BASE}/customer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(customerData),
@@ -154,7 +156,7 @@ const SignupAndOrder = () => {
       console.log("Customer created:", customerResult);
 
       // Step 2: Save Pet data with the customer_id
-      const petResponse = await fetch("/api/pet", {
+      const petResponse = await fetch(`${API_BASE}/pet`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -183,7 +185,7 @@ const SignupAndOrder = () => {
                   : formData.plan === "14 Days" ? 699.00 
                   : 899.00;
 
-      const orderResponse = await fetch("/api/order", {
+      const orderResponse = await fetch(`${API_BASE}/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

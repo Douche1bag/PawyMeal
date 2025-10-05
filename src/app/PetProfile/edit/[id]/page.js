@@ -1,7 +1,10 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useParams } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -89,7 +92,7 @@ const EditPetProfileContent = () => {
   const fetchPetData = async () => {
     try {
       setFetchLoading(true);
-      const response = await fetch(`/api/pet/${id}`);
+      const response = await fetch(`${API_BASE}/pet/${id}`);
       const data = await response.json();
 
       if (data.success) {
@@ -183,7 +186,7 @@ const EditPetProfileContent = () => {
         activityLevel: formData.activityLevel
       };
 
-      const response = await fetch(`/api/pet/${id}`, {
+      const response = await fetch(`${API_BASE}/pet/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

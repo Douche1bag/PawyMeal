@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from 'next/navigation';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 const SettingsContent = () => {
   const searchParams = useSearchParams();
@@ -12,6 +13,7 @@ const SettingsContent = () => {
   const [error, setError] = useState("");
   const [orders, setOrders] = useState([]);
   const [allergyOptions, setAllergyOptions] = useState([]);
+
 
   // Get logged-in user data from session
   const getUserSession = () => {
@@ -49,7 +51,7 @@ const SettingsContent = () => {
         console.log('Fetching customer data for email:', email);
         
         // Fetch customer data by email
-        const customerResponse = await fetch(`/api/customer?email=${email}`);
+        const customerResponse = await fetch(`${API_BASE}/customer?email=${email}`);
         const customerResult = await customerResponse.json();
         
         console.log('Customer API response:', customerResult);
@@ -68,7 +70,7 @@ const SettingsContent = () => {
 
         // Fetch orders using email-based system
         try {
-          const orderResponse = await fetch(`/api/order?customer_email=${encodeURIComponent(email)}`);
+          const orderResponse = await fetch(`${API_BASE}/order?customer_email=${encodeURIComponent(email)}`);
           const orderResult = await orderResponse.json();
           
           if (orderResult.success && orderResult.data) {
@@ -118,7 +120,7 @@ const SettingsContent = () => {
           id: userData._id // The API expects 'id', not '_id'
         };
         
-        response = await fetch("/api/customer", {
+        response = await fetch(`${API_BASE}/customer`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updateData),
@@ -148,7 +150,7 @@ const SettingsContent = () => {
       alert("User information updated successfully!");
       
       // Refresh the user data
-      const customerResponse = await fetch(`/api/customer?email=${email}`);
+      const customerResponse = await fetch(`${API_BASE}/customer?email=${email}`);
       const customerResult = await customerResponse.json();
       if (customerResult.success && customerResult.data) {
         setUserData(customerResult.data);
@@ -166,7 +168,7 @@ const SettingsContent = () => {
     if (!confirmCancel) return;
 
     try {
-      const response = await fetch(`/api/order/${orderId}`, {
+      const response = await fetch(`${API_BASE}/order/${orderId}`, {
         method: "DELETE",
       });
 

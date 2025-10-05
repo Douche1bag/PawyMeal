@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -38,7 +41,7 @@ const PetProfile = () => {
 
   const fetchPets = async () => {
     try {
-      const response = await fetch('/api/pet');
+      const response = await fetch(`${API_BASE}/pet`);
       const data = await response.json();
       
       if (data.success) {
@@ -60,7 +63,7 @@ const PetProfile = () => {
     }
 
     try {
-      const response = await fetch(`/api/pet/${petId}`, {
+      const response = await fetch(`${API_BASE}/pet/${petId}`, {
         method: 'DELETE',
       });
       

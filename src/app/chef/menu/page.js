@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -46,7 +49,7 @@ export default function ChefMenuManagement() {
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/menu');
+      const response = await fetch(`${API_BASE}/menu`);
       const data = await response.json();
       
       if (data.success) {
@@ -64,7 +67,7 @@ export default function ChefMenuManagement() {
 
   const toggleMenuStatus = async (menuId, currentStatus) => {
     try {
-      const response = await fetch(`/api/menu/${menuId}`, {
+      const response = await fetch(`${API_BASE}/menu/${menuId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

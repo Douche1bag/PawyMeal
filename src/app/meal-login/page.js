@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import Nav from "../../components/Nav";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 const MealLogin = () => {
   const router = useRouter();
   const [menus, setMenus] = useState([]);
@@ -21,7 +23,7 @@ const MealLogin = () => {
   useEffect(() => {
     const fetchMenus = async () => {
       try {
-        const response = await fetch('/api/menu');
+        const response = await fetch(`${API_BASE}/menu`);
         const data = await response.json();
         
         if (data.success) {
@@ -88,7 +90,7 @@ const MealLogin = () => {
 
     try {
       // First get customer_id from email
-      const customerResponse = await fetch(`/api/customer?email=${userEmail.replace(/"/g, "")}`);
+      const customerResponse = await fetch(`${API_BASE}/customer?email=${userEmail.replace(/"/g, "")}`);
       const customerData = await customerResponse.json();
       
       if (!customerData.success || !customerData.customer) {
@@ -110,7 +112,7 @@ const MealLogin = () => {
 
       console.log("Sending order data:", orderData); // Debug log
 
-      const response = await fetch('/api/order', {
+      const response = await fetch(`${API_BASE}/order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

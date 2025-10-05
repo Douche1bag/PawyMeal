@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Grid,
@@ -67,7 +70,7 @@ export default function PetManagement() {
   const fetchPets = async (customerId) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/pet?customer_id=${customerId}`);
+      const response = await fetch(`${API_BASE}/pet?customer_id=${customerId}`);
       const data = await response.json();
       if (data.success) {
         setPets(data.data || []);
@@ -100,7 +103,7 @@ export default function PetManagement() {
     if (!petToDelete) return;
 
     try {
-      const response = await fetch(`/api/pet/${petToDelete._id}`, {
+      const response = await fetch(`${API_BASE}/pet/${petToDelete._id}`, {
         method: 'DELETE',
       });
 

@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -63,12 +66,12 @@ export default function OrderHistory() {
       
       // First, try to migrate any pets/orders without customer_email
       await Promise.all([
-        fetch('/api/pet/migrate', {
+        fetch(`${API_BASE}/pet/migrate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ customer_email: customerEmail })
         }).catch(console.error),
-        fetch('/api/order/migrate', {
+        fetch(`${API_BASE}/order/migrate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ customer_email: customerEmail })
@@ -77,9 +80,9 @@ export default function OrderHistory() {
       
       // Fetch orders, pets, and menu items in parallel
       const [orderResponse, petResponse, menuResponse] = await Promise.all([
-        fetch(`/api/order?customer_email=${encodeURIComponent(customerEmail)}`),
-        fetch(`/api/pet?customer_email=${encodeURIComponent(customerEmail)}`),
-        fetch('/api/menu')
+        fetch(`${API_BASE}/order?customer_email=${encodeURIComponent(customerEmail)}`),
+        fetch(`${API_BASE}/pet?customer_email=${encodeURIComponent(customerEmail)}`),
+        fetch(`${API_BASE}/menu`)
       ]);
 
       const orderData = await orderResponse.json();

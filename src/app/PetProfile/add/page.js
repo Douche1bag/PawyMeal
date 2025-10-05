@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -161,7 +164,7 @@ const AddPetProfile = () => {
         activityLevel: formData.activeness // API expects activityLevel, not activeness
       };
 
-      const response = await fetch('/api/pet', {
+      const response = await fetch(`${API_BASE}/pet`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

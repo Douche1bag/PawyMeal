@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -61,7 +64,7 @@ export default function AdminCustomers() {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/customer');
+      const response = await fetch(`${API_BASE}/customer`);
       const data = await response.json();
       
       if (data.success) {
@@ -79,7 +82,7 @@ export default function AdminCustomers() {
 
   const handleAddCustomer = async () => {
     try {
-      const response = await fetch('/api/customer', {
+      const response = await fetch(`${API_BASE}/customer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +112,7 @@ export default function AdminCustomers() {
         delete updateData.password; // Don't update password if empty
       }
 
-      const response = await fetch('/api/customer', {
+      const response = await fetch(`${API_BASE}/customer`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +139,7 @@ export default function AdminCustomers() {
   const handleDeleteCustomer = async (customerId) => {
     if (confirm('Are you sure you want to delete this customer? This will also affect their pets and orders.')) {
       try {
-        const response = await fetch(`/api/customer?id=${customerId}`, {
+        const response = await fetch(`${API_BASE}/customer?id=${customerId}`, {
           method: 'DELETE',
         });
 

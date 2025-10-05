@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Grid,
@@ -62,13 +65,13 @@ export default function ChefDashboard() {
       setLoading(true);
       
       // Fetch menu items
-      const menuResponse = await fetch('/api/menu');
+      const menuResponse = await fetch(`${API_BASE}/menu`);
       const menuData = await menuResponse.json();
 
       // Fetch orders (if exists)
       let orders = [];
       try {
-        const orderResponse = await fetch('/api/order');
+        const orderResponse = await fetch(`${API_BASE}/order`);
         const orderData = await orderResponse.json();
         orders = orderData.success ? orderData.data || [] : [];
       } catch (e) {

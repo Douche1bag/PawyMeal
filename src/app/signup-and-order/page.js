@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -91,7 +94,7 @@ const SignupAndOrder = () => {
       .catch((error) => console.error("Error loading dog breeds:", error));
 
     // Load menu
-    fetch("/api/menu")
+    fetch(`${API_BASE}/menu`)
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
@@ -187,7 +190,7 @@ const SignupAndOrder = () => {
       setLoading(true);
 
       // Step 1: Create customer account
-      const customerResponse = await fetch('/api/customer', {
+      const customerResponse = await fetch(`${API_BASE}/customer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -205,7 +208,7 @@ const SignupAndOrder = () => {
       }
 
       // Step 2: Create pet profile
-      const petResponse = await fetch('/api/pet', {
+      const petResponse = await fetch(`${API_BASE}/pet`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -229,7 +232,7 @@ const SignupAndOrder = () => {
 
       // Step 3: Create order
       const selectedPlan = plans.find(p => p.name === formData.plan);
-      const orderResponse = await fetch('/api/order', {
+      const orderResponse = await fetch(`${API_BASE}/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

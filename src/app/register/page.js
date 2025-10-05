@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Paper,
@@ -106,7 +109,7 @@ export default function RegisterPage() {
         zipCode: address.zipCode
       };
 
-      const response = await fetch('/api/customer', {
+      const response = await fetch(`${API_BASE}/customer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

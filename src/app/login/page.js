@@ -25,6 +25,8 @@ import {
   DeliveryDining as DeliveryIcon
 } from '@mui/icons-material';
 
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 const userRoles = [
   { value: 'customer', label: 'Customer', icon: <PersonIcon />, color: '#2196f3' },
   { value: 'chef', label: 'Chef', icon: <ChefIcon />, color: '#ff9800' },
@@ -57,7 +59,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

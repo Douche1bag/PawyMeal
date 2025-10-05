@@ -5,6 +5,8 @@ import Link from "next/link";
 import Nav from "../../components/Nav"; // Use relative path
 import Image from "next/image";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 const RecipePage = () => {
   const [isClient, setIsClient] = useState(false);
   const [menuItems, setMenuItems] = useState([]);
@@ -13,7 +15,7 @@ const RecipePage = () => {
 
   useEffect(() => {
     setIsClient(true);
-    fetch("/api/menu")
+    fetch(`${API_BASE}/menu`)
       .then((response) => response.json())
       .then((data) => {
         // If data is an array, use data directly

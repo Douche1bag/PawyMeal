@@ -39,10 +39,13 @@ const QuickOrderModal = ({ open, onClose, onSubmit, loading, pets, menus, setMen
     }
   }, [open]);
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
+
   const fetchMenus = async () => {
     try {
       setMenuLoading(true);
-      const response = await fetch('/api/menu');
+      const response = await fetch(`${API_BASE}/menu`);
       const data = await response.json();
       if (data.success) {
         setMenus(data.data || []);
@@ -310,7 +313,7 @@ const HomePage = () => {
 
   const fetchPets = async (customerEmail) => {
     try {
-      const response = await fetch(`/api/pet?customer_email=${encodeURIComponent(customerEmail)}`);
+      const response = await fetch(`${API_BASE}/pet?customer_email=${encodeURIComponent(customerEmail)}`);
       const data = await response.json();
       if (data.success) {
         const fetchedPets = data.data || [];
@@ -329,7 +332,7 @@ const HomePage = () => {
   const migratePetsToEmail = async (customerEmail) => {
     try {
       // Call a simple migration endpoint
-      const response = await fetch('/api/pet/migrate', {
+      const response = await fetch(`${API_BASE}/pet/migrate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_email: customerEmail })
@@ -337,7 +340,7 @@ const HomePage = () => {
       
       if (response.ok) {
         // Refetch pets after migration
-        const newResponse = await fetch(`/api/pet?customer_email=${encodeURIComponent(customerEmail)}`);
+        const newResponse = await fetch(`${API_BASE}/pet?customer_email=${encodeURIComponent(customerEmail)}`);
         const newData = await newResponse.json();
         if (newData.success) {
           setPets(newData.data || []);
@@ -390,7 +393,7 @@ const HomePage = () => {
         petAllergies: selectedPetObj?.allergies || []
       };
 
-      const response = await fetch('/api/order/simple', {
+      const response = await fetch(`${API_BASE}/order/simple`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

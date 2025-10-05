@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 // Helper function to get user session - moved outside component for global access
 const getUserSession = () => {
   try {
@@ -89,7 +91,7 @@ const QuickOrderModal = ({ open, onClose, onSubmit, loading, pets }) => {
   const fetchMenus = async () => {
     try {
       setMenuLoading(true);
-      const response = await fetch('/api/menu');
+      const response = await fetch(`${API_BASE}/menu`);
       const data = await response.json();
       if (data.success) {
         setMenus(data.data || []);
@@ -403,7 +405,7 @@ export default function CustomerDashboard() {
   // Function to update order names
   const updateOrderNames = async () => {
     try {
-      const response = await fetch('/api/order/update-names', { method: 'POST' });
+      const response = await fetch(`${API_BASE}/order/update-names`, { method: 'POST' });
       const result = await response.json();
       if (result.success) {
         console.log(`Updated ${result.updatedOrders.length} orders`);
@@ -431,7 +433,7 @@ export default function CustomerDashboard() {
       try {
         // Fetch pets using email
       const userEmail = userSession.email;
-      const petResponse = await fetch(`/api/pet?customer_email=${encodeURIComponent(userEmail)}`);
+      const petResponse = await fetch(`${API_BASE}/pet?customer_email=${encodeURIComponent(userEmail)}`);
         const petData = await petResponse.json();
         pets = petData.success ? petData.data || [] : [];
         console.log('Loaded pets for user:', pets);
@@ -440,7 +442,7 @@ export default function CustomerDashboard() {
       }
 
       // Fetch menu items (this can remain global)
-      const menuResponse = await fetch('/api/menu');
+      const menuResponse = await fetch(`${API_BASE}/menu`);
       const menuData = await menuResponse.json();
 
       // Fetch orders for the specific user using email
@@ -451,19 +453,19 @@ export default function CustomerDashboard() {
         if (userEmail) {
           // First, try to migrate any orders/pets without customer_email
           await Promise.all([
-            fetch('/api/pet/migrate', {
+            fetch(`${API_BASE}/pet/migrate`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ customer_email: userEmail })
             }).catch(console.error),
-            fetch('/api/order/migrate', {
+            fetch(`${API_BASE}/order/migrate`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ customer_email: userEmail })
             }).catch(console.error)
           ]);
           
-          const orderResponse = await fetch(`/api/order?customer_email=${encodeURIComponent(userEmail)}`);
+          const orderResponse = await fetch(`${API_BASE}/order?customer_email=${encodeURIComponent(userEmail)}`);
           if (orderResponse.ok) {
             const orderData = await orderResponse.json();
             orders = orderData.success ? orderData.data || [] : [];
@@ -528,7 +530,7 @@ export default function CustomerDashboard() {
     if (!petToDelete) return;
 
     try {
-      const response = await fetch(`/api/pet/${petToDelete._id}`, {
+      const response = await fetch(`${API_BASE}/pet/${petToDelete._id}`, {
         method: 'DELETE',
       });
 
@@ -567,7 +569,7 @@ export default function CustomerDashboard() {
 
 
 
-      const response = await fetch('/api/order/simple', {
+      const response = await fetch(`${API_BASE}/order/simple`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

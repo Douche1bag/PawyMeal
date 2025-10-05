@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 import {
   Container,
   Grid,
@@ -60,21 +63,21 @@ export default function AdminDashboard() {
       setLoading(true);
       
       // Fetch employees
-      const employeeResponse = await fetch('/api/employee');
+      const employeeResponse = await fetch(`${API_BASE}/employee`);
       const employeeData = await employeeResponse.json();
       
       // Fetch customers
-      const customerResponse = await fetch('/api/customer');
+      const customerResponse = await fetch(`${API_BASE}/customer`);
       const customerData = await customerResponse.json();
       
       // Fetch menu items
-      const menuResponse = await fetch('/api/menu');
+      const menuResponse = await fetch(`${API_BASE}/menu`);
       const menuData = await menuResponse.json();
 
       // Fetch orders
       let orders = [];
       try {
-        const orderResponse = await fetch('/api/order');
+        const orderResponse = await fetch(`${API_BASE}/order`);
         const orderData = await orderResponse.json();
         orders = orderData.success ? orderData.data || [] : [];
       } catch (e) {
